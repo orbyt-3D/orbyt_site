@@ -2,8 +2,16 @@
 
 Landing page for **orbyt**, a 3D engine that AI agents drive. Live at https://www.orbyt3d.space
 
-Everything lives in a single file, `index.html`: no build step, no dependencies to install.
-Three.js (v0.160) is loaded from the jsDelivr CDN at runtime.
+A static site with no build step and no dependencies to install. Three.js (v0.160) is loaded from the jsDelivr CDN.
+
+| Path | What it is |
+|---|---|
+| `index.html` | Landing page |
+| `showcase.html` | Live, orbitable 3D scenes (`?scene=launch`, `servers` or `wind`) |
+| `docs/` | Getting started, models and agents (MCP), performance |
+| `changelog.html` | Release notes |
+| `js/site3d.js` | Shared 3D code: scene builders, renderer and post-processing, hero, showcase stills |
+| `css/pages.css`, `img/` | Styles for secondary pages, icon sprite, logo |
 
 ## What's on the page
 
@@ -14,7 +22,7 @@ Three.js (v0.160) is loaded from the jsDelivr CDN at runtime.
 
 ## Run it locally
 
-Open `index.html` directly, or serve the folder (recommended):
+The pages load ES modules, so serve the folder rather than opening files directly:
 
 ```bash
 python -m http.server 5173

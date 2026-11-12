@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Performance and memory · orbyt</title>
+<meta name="description" content="How orbyt keeps frames fast and GPU memory in check.">
+<link rel="icon" type="image/svg+xml" href="/img/logo.svg">
+<link rel="canonical" href="https://www.orbyt3d.space/docs/performance.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="orbyt">
+<meta property="og:title" content="Performance and memory · orbyt">
+<meta property="og:description" content="How orbyt keeps frames fast and GPU memory in check.">
+<meta property="og:url" content="https://www.orbyt3d.space/docs/performance.html">
+<meta property="og:image" content="https://www.orbyt3d.space/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#060b10">
+<link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<div class="wrap">
+<header class="navigation">
+  <a class="brand" href="/" aria-label="orbyt home"><svg aria-hidden="true"><use href="/img/sprite.svg#logo"/></svg>orbyt</a>
+  <span class="version">v0.9.2</span>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="txt" aria-current="page" href="/docs/"><svg class="icon" aria-hidden="true"><use href="/img/sprite.svg#i-book"/></svg><span>Docs</span></a>
+    <a class="txt" href="/changelog.html"><svg class="icon" aria-hidden="true"><use href="/img/sprite.svg#i-history"/></svg><span>Changelog</span></a>
+    <a class="gh" href="https://github.com/orbyt-3D/orbyt_site" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="/img/sprite.svg#i-github"/></svg>GitHub</a>
+  </nav>
+</header>
+<div class="docs-layout">
+  <nav class="docs-side" aria-label="Documentation">
+    <p>Docs</p>
+    <a href="/docs/">Getting started</a>
+    <a href="/docs/agents.html">Models and agents</a>
+    <a href="/docs/performance.html" aria-current="page">Performance and memory</a>
+    <a href="/changelog.html">Changelog</a>
+  </nav>
+  <main class="prose" id="content">
+
+<h1>Performance and memory</h1>
+<p class="lede">How orbyt keeps frames fast and GPU memory in check, and the settings you can tune.</p>
+<div class="note"><strong>Preview.</strong> The <code>orbyt</code> package is in active development. This page describes the 0.9.x API it is being built to; names may still change before 1.0.</div>
+
+<h2 id="frame">What makes a frame expensive</h2>
+<ul>
+<li><strong>Draw calls.</strong> Each separately drawn mesh costs CPU time. orbyt merges static parts that share a material into one draw.</li>
+<li><strong>Pixels.</strong> Cost grows with the number of rendered pixels. Resolution follows the screen and is capped by a pixel budget.</li>
+<li><strong>Shadows.</strong> Static scenes draw the shadow map once instead of every frame.</li>
+<li><strong>Post effects.</strong> Bloom runs at reduced resolution and can be switched off.</li>
+</ul>
+
+<h2 id="adaptive">Adaptive quality</h2>
+<p>Flare watches frame time. If it stays above about 22&nbsp;ms (below roughly 45&nbsp;fps), resolution steps down in small increments, and bloom turns off as a last resort. The live scenes on this site use the same logic; open the <a href="/showcase.html">showcase</a> to see fps and draw calls as you orbit.</p>
+
+<h2 id="memory">Memory budget</h2>
+<p><code>memoryBudgetMiB</code> caps textures and geometry. When a model would exceed it, orbyt downsizes the largest textures first and logs what it changed.</p>
+<pre><code><span class="tk-k">new</span> <span class="tk-f">Flare</span>(canvas, parts, { memoryBudgetMiB: <span class="tk-n">256</span>, pixelRatio: <span class="tk-n">1</span> });</code></pre>
+
+<h2 id="tips">Tips</h2>
+<ul>
+<li>Share materials between parts that look the same: they merge into fewer draws.</li>
+<li>Prefer KTX2/Basis textures for big models; they stay compressed on the GPU.</li>
+<li>Keep moving parts few and separate; everything static can be merged.</li>
+<li>Stop rendering when the canvas is off screen (an <code>IntersectionObserver</code> is enough).</li>
+<li>Respect <code>prefers-reduced-motion</code> by pausing camera motion.</li>
+</ul>
+<div class="pager"><a href="/docs/agents.html"><small>Previous</small>Models and agents</a><a class="next" href="/changelog.html"><small>Next</small>Changelog</a></div>
+
+  </main>
+</div>
+<footer class="site-footer">
+  <a class="brand" href="/"><svg aria-hidden="true"><use href="/img/sprite.svg#logo"/></svg>orbyt <span style="color:var(--muted);font-weight:400">by Lumora Labs</span></a>
+  <div class="footer-links">
+    <a href="https://github.com/orbyt-3D/orbyt_site" target="_blank" rel="noopener">GitHub</a>
+    <a href="/showcase.html">Live scenes</a>
+    <a href="/changelog.html">Changelog</a>
+    <a href="https://github.com/orbyt-3D/orbyt_site/blob/main/LICENSE" target="_blank" rel="noopener">MIT license</a>
+    <a href="/img/logo.svg" download="orbyt-logo.svg">Logo SVG</a>
+  </div>
+</footer>
+</div>
+</body>
+</html>

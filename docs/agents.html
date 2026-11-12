@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Models and agents · orbyt</title>
+<meta name="description" content="Load models as parts and let AI agents build and render scenes through the orbyt MCP server.">
+<link rel="icon" type="image/svg+xml" href="/img/logo.svg">
+<link rel="canonical" href="https://www.orbyt3d.space/docs/agents.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="orbyt">
+<meta property="og:title" content="Models and agents · orbyt">
+<meta property="og:description" content="Load models as parts and let AI agents build and render scenes through the orbyt MCP server.">
+<meta property="og:url" content="https://www.orbyt3d.space/docs/agents.html">
+<meta property="og:image" content="https://www.orbyt3d.space/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#060b10">
+<link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<div class="wrap">
+<header class="navigation">
+  <a class="brand" href="/" aria-label="orbyt home"><svg aria-hidden="true"><use href="/img/sprite.svg#logo"/></svg>orbyt</a>
+  <span class="version">v0.9.2</span>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="txt" aria-current="page" href="/docs/"><svg class="icon" aria-hidden="true"><use href="/img/sprite.svg#i-book"/></svg><span>Docs</span></a>
+    <a class="txt" href="/changelog.html"><svg class="icon" aria-hidden="true"><use href="/img/sprite.svg#i-history"/></svg><span>Changelog</span></a>
+    <a class="gh" href="https://github.com/orbyt-3D/orbyt_site" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="/img/sprite.svg#i-github"/></svg>GitHub</a>
+  </nav>
+</header>
+<div class="docs-layout">
+  <nav class="docs-side" aria-label="Documentation">
+    <p>Docs</p>
+    <a href="/docs/">Getting started</a>
+    <a href="/docs/agents.html" aria-current="page">Models and agents</a>
+    <a href="/docs/performance.html">Performance and memory</a>
+    <a href="/changelog.html">Changelog</a>
+  </nav>
+  <main class="prose" id="content">
+
+<h1>Models and agents</h1>
+<p class="lede">Load real models as parts, then let an AI agent build, edit and render scenes through the orbyt MCP server.</p>
+<div class="note"><strong>Preview.</strong> The <code>orbyt</code> package is in active development. This page describes the 0.9.x API it is being built to; names may still change before 1.0.</div>
+
+<h2 id="parts">Models are parts</h2>
+<p><code>loadGltf()</code> splits a GLB or glTF file into <em>parts</em>: one entry per mesh, each with a stable id, name, material and bounding box. Everything in orbyt, from rendering to agent tools, works on parts.</p>
+<pre><code><span class="tk-k">const</span> { parts } = <span class="tk-k">await</span> <span class="tk-f">loadGltf</span>(<span class="tk-s">'/airport.glb'</span>);
+parts.<span class="tk-f">filter</span>(p =&gt; p.name.<span class="tk-f">includes</span>(<span class="tk-s">'truck'</span>));   <span class="tk-c">// pick parts by name</span>
+renderer.<span class="tk-f">replaceParts</span>(parts);                       <span class="tk-c">// hot-swap the model</span></code></pre>
+
+<h2 id="mcp">The MCP server</h2>
+<p><code>orbyt-mcp</code> exposes a live scene to any agent that speaks the <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a> over stdio. The agent edits the scene with tool calls and asks for rendered frames to check its work.</p>
+<pre><code>npx orbyt-mcp --backend gpu --memory 256</code></pre>
+<table>
+<thead><tr><th>Flag</th><th>Values</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>--backend</code></td><td><code>gpu</code> | <code>cpu</code></td><td><code>gpu</code> renders with WebGL2 in a headless browser; <code>cpu</code> uses software rendering where no GPU is available.</td></tr>
+<tr><td><code>--memory</code></td><td>MiB</td><td>Budget for textures and geometry inside the server.</td></tr>
+</tbody>
+</table>
+
+<h3>Connect it to an MCP client</h3>
+<p>Add orbyt to your client's MCP configuration, for example:</p>
+<pre><code>{
+  <span class="tk-s">"mcpServers"</span>: {
+    <span class="tk-s">"orbyt"</span>: {
+      <span class="tk-s">"command"</span>: <span class="tk-s">"npx"</span>,
+      <span class="tk-s">"args"</span>: [<span class="tk-s">"-y"</span>, <span class="tk-s">"orbyt-mcp"</span>, <span class="tk-s">"--backend"</span>, <span class="tk-s">"gpu"</span>, <span class="tk-s">"--memory"</span>, <span class="tk-s">"256"</span>]
+    }
+  }
+}</code></pre>
+
+<h2 id="tools">Tools</h2>
+<p><span class="badge ok">core</span> tools are part of the first release; <span class="badge soon">roadmap</span> tools are planned and will land across 0.9.x.</p>
+<table>
+<thead><tr><th>Tool</th><th>What it does</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><code>create_scene</code></td><td>Start an empty scene with a sky and ground.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>load_model</code></td><td>Load a GLB/glTF file and add its parts.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>add_primitive</code></td><td>Add a box, sphere, cylinder, plane or cone.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>remove_part</code></td><td>Delete a part by id.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>list_parts</code></td><td>List parts with ids, names, materials and bounds.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>describe_scene</code></td><td>Plain-language summary of what is in the scene.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_material</code></td><td>Change colour, roughness, metalness, emissive or opacity.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_camera</code></td><td>Move the camera with eye, target and fov.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_environment</code></td><td>Switch HDRI, sky colours, fog and exposure.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>render_frame</code></td><td>Render a Flare frame and return it as a PNG.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>transform_part</code></td><td>Move, rotate or scale a part.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>set_light</code></td><td>Add or edit sun, spot and point lights.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>explode_view</code></td><td>Pull parts apart along their centres to show assembly.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>blend_meshes</code></td><td>Morph between two meshes or shape keys.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>bake_frame</code></td><td>Path-trace a still with Bake.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>compare_views</code></td><td>Render labelled views side by side for review.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>render_normals</code></td><td>Render world-space normals for inspection.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>snapshot</code></td><td>Save and restore scene state.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>export_glb</code></td><td>Export the current scene as GLB.</td><td><span class="badge soon">roadmap</span></td></tr>
+</tbody>
+</table>
+
+<h2 id="loop">A typical agent loop</h2>
+<ol>
+<li><code>create_scene</code> or <code>load_model</code> to get something on stage.</li>
+<li><code>list_parts</code> / <code>describe_scene</code> to understand it.</li>
+<li><code>set_material</code>, <code>set_camera</code>, <code>set_environment</code> to make changes.</li>
+<li><code>render_frame</code> to look at the result, then repeat.</li>
+</ol>
+<div class="pager"><a href="/docs/"><small>Previous</small>Getting started</a><a class="next" href="/docs/performance.html"><small>Next</small>Performance and memory</a></div>
+
+  </main>
+</div>
+<footer class="site-footer">
+  <a class="brand" href="/"><svg aria-hidden="true"><use href="/img/sprite.svg#logo"/></svg>orbyt <span style="color:var(--muted);font-weight:400">by Lumora Labs</span></a>
+  <div class="footer-links">
+    <a href="https://github.com/orbyt-3D/orbyt_site" target="_blank" rel="noopener">GitHub</a>
+    <a href="/showcase.html">Live scenes</a>
+    <a href="/changelog.html">Changelog</a>
+    <a href="https://github.com/orbyt-3D/orbyt_site/blob/main/LICENSE" target="_blank" rel="noopener">MIT license</a>
+    <a href="/img/logo.svg" download="orbyt-logo.svg">Logo SVG</a>
+  </div>
+</footer>
+</div>
+</body>
+</html>
