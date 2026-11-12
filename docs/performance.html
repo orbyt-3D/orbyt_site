@@ -41,22 +41,33 @@
 
 <h1>Performance and memory</h1>
 <p class="lede">How orbyt keeps frames fast and GPU memory in check, and the settings you can tune.</p>
-<div class="note"><strong>Preview.</strong> The <code>orbyt</code> package is in active development. This page describes the 0.9.x API it is being built to; names may still change before 1.0.</div>
+<div class="note"><strong>0.9.2 preview.</strong> The engine is built and tested; publishing to npm is coming soon, so the install line below will work once the package is live. Names may still change before 1.0.</div>
 
 <h2 id="frame">What makes a frame expensive</h2>
 <ul>
-<li><strong>Draw calls.</strong> Each separately drawn mesh costs CPU time. orbyt merges static parts that share a material into one draw.</li>
-<li><strong>Pixels.</strong> Cost grows with the number of rendered pixels. Resolution follows the screen and is capped by a pixel budget.</li>
-<li><strong>Shadows.</strong> Static scenes draw the shadow map once instead of every frame.</li>
-<li><strong>Post effects.</strong> Bloom runs at reduced resolution and can be switched off.</li>
+<li><strong>Draw calls.</strong> Each separately drawn mesh costs CPU time. Merge static meshes that share a material.</li>
+<li><strong>Pixels.</strong> Cost grows with the number of rendered pixels. Lower <code>pixelRatio</code> on large or slow screens.</li>
+<li><strong>Shadows.</strong> Pass a smaller shadow-map size, or <code>shadows: false</code> for scenes that don't need them.</li>
+<li><strong>Post effects.</strong> <code>bloom: false</code> or <code>hdr: false</code> skip the post-processing passes.</li>
 </ul>
+<pre><code><span class="tk-k">new</span> <span class="tk-f">Flare</span>(canvas, parts, { pixelRatio: <span class="tk-n">1</span>, samples: <span class="tk-n">2</span>, shadows: <span class="tk-n">1024</span>, bloom: <span class="tk-n">false</span> });</code></pre>
 
-<h2 id="adaptive">Adaptive quality</h2>
-<p>Flare watches frame time. If it stays above about 22&nbsp;ms (below roughly 45&nbsp;fps), resolution steps down in small increments, and bloom turns off as a last resort. The live scenes on this site use the same logic; open the <a href="/showcase.html">showcase</a> to see fps and draw calls as you orbit.</p>
+<h2 id="adaptive">How this site stays smooth</h2>
+<p>The 3D on orbyt3d.space merges static meshes per material (about 130 draw calls for the whole launch site), draws its shadow map once, and steps resolution down if frames run slower than about 45&nbsp;fps, turning bloom off as a last resort. Open the <a href="/showcase.html">showcase</a> to watch fps and draw calls as you orbit.</p>
 
-<h2 id="memory">Memory budget</h2>
-<p><code>memoryBudgetMiB</code> caps textures and geometry. When a model would exceed it, orbyt downsizes the largest textures first and logs what it changed.</p>
-<pre><code><span class="tk-k">new</span> <span class="tk-f">Flare</span>(canvas, parts, { memoryBudgetMiB: <span class="tk-n">256</span>, pixelRatio: <span class="tk-n">1</span> });</code></pre>
+<h2 id="memory">Memory in the MCP server</h2>
+<p><code>orbyt-mcp --memory &lt;MiB&gt;</code> sets one budget for the headless renderer: the browser heap, the largest frame (256 MiB allows about 4 megapixels; larger requests are downscaled and the reply says so) and the largest model or HDRI file it will load (half the budget).</p>
+
+<h2 id="size">Bundle size</h2>
+<table>
+<thead><tr><th>Bundle (esbuild, minified, gzip -9)</th><th>gzip</th></tr></thead>
+<tbody>
+<tr><td>orbyt's own code (three.js external)</td><td>3.5 KB</td></tr>
+<tr><td>Lit box with orbyt (three.js, PMREM, bloom)</td><td>148.6 KB</td></tr>
+<tr><td>Lit box with Flare and Bake</td><td>209.2 KB</td></tr>
+<tr><td>Lit box with plain three.js (no post-processing)</td><td>130.8 KB</td></tr>
+</tbody>
+</table>
 
 <h2 id="tips">Tips</h2>
 <ul>

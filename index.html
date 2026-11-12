@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>orbyt · 3D engine that AI agents drive</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22lg%22%20x1%3D%22.2%22%20y1%3D%22.1%22%20x2%3D%22.85%22%20y2%3D%22.95%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235eead4%22/%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%232dd4bf%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a855f7%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg%20transform%3D%22rotate%28-28%2016%2016%29%22%3E%3Cellipse%20cx%3D%2216%22%20cy%3D%2216%22%20rx%3D%2214.6%22%20ry%3D%224.8%22%20fill%3D%22none%22%20stroke%3D%22%23e8fbf8%22%20stroke-opacity%3D%22.5%22%20stroke-width%3D%221.6%22/%3E%3C/g%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%228.2%22%20fill%3D%22url%28%23lg%29%22/%3E%3Cpath%20d%3D%22M11.2%2012.6a6%206%200%200%201%204.6-2.4%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.6%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22/%3E%3Cg%20transform%3D%22rotate%28-28%2016%2016%29%22%3E%3Cpath%20d%3D%22M30.6%2016A14.6%204.8%200%200%201%201.4%2016%22%20fill%3D%22none%22%20stroke%3D%22%2308121a%22%20stroke-width%3D%223%22/%3E%3Cpath%20d%3D%22M30.6%2016A14.6%204.8%200%200%201%201.4%2016%22%20fill%3D%22none%22%20stroke%3D%22%23e8fbf8%22%20stroke-width%3D%221.6%22/%3E%3C/g%3E%3Ccircle%20cx%3D%2228.9%22%20cy%3D%229.2%22%20r%3D%222.6%22%20fill%3D%22%23e879f9%22%20stroke%3D%22%2308121a%22%20stroke-width%3D%221.4%22/%3E%3C/svg%3E">
-<meta name="description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 19 MCP tools in one package.">
+<meta name="description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 18 MCP tools in one package.">
 <link rel="canonical" href="https://www.orbyt3d.space/">
 <meta name="theme-color" content="#060b10">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="orbyt">
 <meta property="og:url" content="https://www.orbyt3d.space/">
 <meta property="og:title" content="orbyt · 3D engine that AI agents drive">
-<meta property="og:description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 19 MCP tools in one package.">
+<meta property="og:description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 18 MCP tools in one package.">
 <meta property="og:image" content="https://www.orbyt3d.space/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="orbyt: a rocket on a lit launch pad at night, rendered in 3D">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="orbyt · 3D engine that AI agents drive">
-<meta name="twitter:description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 19 MCP tools in one package.">
+<meta name="twitter:description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 18 MCP tools in one package.">
 <meta name="twitter:image" content="https://www.orbyt3d.space/og.jpg">
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "orbyt", "applicationCategory": "DeveloperApplication",
@@ -186,6 +186,8 @@ main > *, .hero > *, .code-grid > *, .agents > * { min-width: 0; }
 .capability-list li { color: var(--muted); background: rgba(255,255,255,.07); border-radius: 999px; padding: 4px 11px; font-size: 13px;
   transition: color .2s, background-color .2s; }
 .capability-list li:hover { color: var(--text); background: rgba(45,212,191,.16); }
+.capability-list li.roadmap { opacity: .55; border: 1px dashed rgba(255,255,255,.18); background: transparent; }
+.capability-list li.roadmap::after { content: " · soon"; color: var(--accent-2); }
 .gallery { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
 .example { position: relative; display: block; grid-column: span 2; min-width: 0; border-radius: 20px;
   transition: box-shadow .4s var(--ease); }
@@ -314,7 +316,7 @@ main > *, .hero > *, .code-grid > *, .agents > * { min-width: 0; }
     </div>
     <div class="hero-copy">
       <h1 id="hero-title">3D engine that<br>AI agents drive</h1>
-      <p>Real-time WebGL2 with Flare, offline path tracing with Bake, and 19 MCP tools in one package.</p>
+      <p>Real-time WebGL2 with Flare, offline path tracing with Bake, and 18 MCP tools in one package.</p>
       <div class="hero-actions">
         <a href="/docs/"><svg class="icon"><use href="#i-book"/></svg>Get started</a>
         <a href="#install"><svg class="pkg-logo" viewBox="0 0 18 18"><rect width="18" height="18" rx="3" fill="#cb3837"/><path d="M4 4h10v10h-3V7H8v7H4z" fill="#fff"/></svg>npm</a>
@@ -363,7 +365,7 @@ renderer.<span class="tk-f">render</span>(<span class="tk-p">{</span> eye: [<spa
   <section class="examples" id="examples" aria-labelledby="examples-title">
     <div class="section-heading"><h2 id="examples-title">Showcase</h2><a href="/showcase.html">Open the live scenes</a></div>
     <ul class="capability-list" aria-label="Engine capabilities">
-      <li>PBR materials</li><li>Cascaded shadows</li><li>HDR and bloom</li><li>MSAA</li><li>Mesh blend</li><li>Soft bodies</li><li>Volumetric fog</li><li>Skinning and morphs</li><li>Rigid physics</li><li>Fluid surfaces</li><li>Glass and alpha cutouts</li><li>HDRI lighting</li><li>Procedural terrain</li><li>Foliage scatter</li><li>Vehicles</li><li>GLB import and export</li><li>Bake path tracer</li>
+      <li>PBR materials</li><li>Fitted shadows</li><li>HDR and bloom</li><li>MSAA</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Mesh blend</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Soft bodies</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Volumetric fog</li><li>Skinning and morphs</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Rigid physics</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Fluid surfaces</li><li>Glass and alpha cutouts</li><li>HDRI lighting</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Procedural terrain</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Foliage scatter</li><li class="roadmap" title="On the roadmap, not in 0.9.2 yet">Vehicles</li><li>GLB import and export</li><li>Bake path tracer</li>
     </ul>
     <div class="gallery">
       <a class="example is-lead" href="/showcase.html?scene=launch" data-glow="#2dd4bf"><span class="work-media"><span class="skeleton"></span><img data-shot="launch" alt="Launch site, rendered by orbyt"></span><span class="work-title"><span class="work-index" aria-hidden="true">01</span><span class="work-name">Launch site</span><span class="work-date">A heavy-lift rocket on the pad with its service tower</span></span></a>
@@ -380,19 +382,23 @@ renderer.<span class="tk-f">render</span>(<span class="tk-p">{</span> eye: [<spa
         <pre><code id="mcp-cmd"><span class="tk-f">npx</span> orbyt-mcp <span class="tk-k">--backend</span> gpu <span class="tk-k">--memory</span> <span class="tk-n">256</span></code></pre>
         <button class="copy-btn" data-copy-target="mcp-cmd"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
       </div>
-      <div class="agent-size-bars" aria-label="Bundle size comparison">
+      <div class="agent-size-bars" aria-label="Bundle size, measured with esbuild and gzip -9">
         <div class="size-bar-row">
-          <div class="size-bar-label"><span><strong>orbyt</strong> (lit-box)</span><span>47.2 KB gzip · 2.8× smaller</span></div>
-          <div class="size-bar-track"><span class="size-bar-fill is-ours" data-w="35.3"></span></div>
+          <div class="size-bar-label"><span><strong>orbyt</strong> on top of three.js</span><span>+3.5 KB gzip</span></div>
+          <div class="size-bar-track"><span class="size-bar-fill is-ours" data-w="2.4"></span></div>
         </div>
         <div class="size-bar-row">
-          <div class="size-bar-label"><span>three.js (lit-box)</span><span>133.8 KB gzip</span></div>
-          <div class="size-bar-track"><span class="size-bar-fill is-other" data-w="100"></span></div>
+          <div class="size-bar-label"><span>lit box with orbyt (HDR, bloom, PMREM)</span><span>148.6 KB gzip</span></div>
+          <div class="size-bar-track"><span class="size-bar-fill is-ours" data-w="100"></span></div>
+        </div>
+        <div class="size-bar-row">
+          <div class="size-bar-label"><span>lit box with plain three.js</span><span>130.8 KB gzip</span></div>
+          <div class="size-bar-track"><span class="size-bar-fill is-other" data-w="88"></span></div>
         </div>
       </div>
     </div>
     <div class="workflow">
-      <div><svg><use href="#i-cube"/></svg><strong>19 MCP tools</strong><span>Create, edit, explode, blend and render over stdio.</span></div>
+      <div><svg><use href="#i-cube"/></svg><strong>18 MCP tools</strong><span>Create, edit, explode, bake and render over stdio.</span></div>
       <div><svg><use href="#i-code"/></svg><strong>Flare + Bake</strong><span>Real-time WebGL2 frames or path-traced stills.</span></div>
       <div><svg><use href="#i-image"/></svg><strong>Visual review</strong><span>Compare labeled views and normals from one snapshot.</span></div>
     </div>

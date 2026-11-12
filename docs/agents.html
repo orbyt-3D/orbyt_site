@@ -41,10 +41,10 @@
 
 <h1>Models and agents</h1>
 <p class="lede">Load real models as parts, then let an AI agent build, edit and render scenes through the orbyt MCP server.</p>
-<div class="note"><strong>Preview.</strong> The <code>orbyt</code> package is in active development. This page describes the 0.9.x API it is being built to; names may still change before 1.0.</div>
+<div class="note"><strong>0.9.2 preview.</strong> The engine is built and tested; publishing to npm is coming soon, so the install line below will work once the package is live. Names may still change before 1.0.</div>
 
 <h2 id="parts">Models are parts</h2>
-<p><code>loadGltf()</code> splits a GLB or glTF file into <em>parts</em>: one entry per mesh, each with a stable id, name, material and bounding box. Everything in orbyt, from rendering to agent tools, works on parts.</p>
+<p><code>loadGltf()</code> splits a GLB or glTF file into <em>parts</em>, one per top-level node (a single wrapper root is unwrapped and world transforms are kept). It resolves to <code>{ parts, scene, animations, gltf }</code>; pass <code>split: 'whole'</code> to keep the model as one part. Meshopt compression works out of the box, and <code>dracoPath</code> enables Draco.</p>
 <pre><code><span class="tk-k">const</span> { parts } = <span class="tk-k">await</span> <span class="tk-f">loadGltf</span>(<span class="tk-s">'/airport.glb'</span>);
 parts.<span class="tk-f">filter</span>(p =&gt; p.name.<span class="tk-f">includes</span>(<span class="tk-s">'truck'</span>));   <span class="tk-c">// pick parts by name</span>
 renderer.<span class="tk-f">replaceParts</span>(parts);                       <span class="tk-c">// hot-swap the model</span></code></pre>
@@ -55,46 +55,50 @@ renderer.<span class="tk-f">replaceParts</span>(parts);                       <s
 <table>
 <thead><tr><th>Flag</th><th>Values</th><th>Notes</th></tr></thead>
 <tbody>
-<tr><td><code>--backend</code></td><td><code>gpu</code> | <code>cpu</code></td><td><code>gpu</code> renders with WebGL2 in a headless browser; <code>cpu</code> uses software rendering where no GPU is available.</td></tr>
-<tr><td><code>--memory</code></td><td>MiB</td><td>Budget for textures and geometry inside the server.</td></tr>
+<tr><td><code>--backend</code></td><td><code>gpu</code> (default) | <code>cpu</code></td><td><code>gpu</code> renders with hardware WebGL2 in a headless browser and falls back to <code>cpu</code> if there's no GPU. <code>cpu</code> uses SwiftShader: slower, but works on any machine and in CI.</td></tr>
+<tr><td><code>--memory</code></td><td>MiB, default <code>256</code></td><td>Sets the browser heap, the largest frame (about MiB × 16,384 px, so 256 → 4 MP; bigger requests are downscaled) and the largest model or HDRI file (MiB ÷ 2).</td></tr>
+<tr><td><code>--browser</code></td><td>path</td><td>Chrome, Edge or Chromium executable. Found automatically when omitted.</td></tr>
 </tbody>
 </table>
+<p>Rendering through the server needs a Chromium-family browser (Chrome, Edge or Chromium) installed on the machine.</p>
 
 <h3>Connect it to an MCP client</h3>
-<p>Add orbyt to your client's MCP configuration, for example:</p>
+<p>With Claude Code:</p>
+<pre><code>claude mcp add orbyt -- npx -y -p @orbythq/orbyt@0.9.2 orbyt-mcp --backend gpu --memory 256</code></pre>
+<p>Or add it to any client's MCP configuration:</p>
 <pre><code>{
   <span class="tk-s">"mcpServers"</span>: {
     <span class="tk-s">"orbyt"</span>: {
       <span class="tk-s">"command"</span>: <span class="tk-s">"npx"</span>,
-      <span class="tk-s">"args"</span>: [<span class="tk-s">"-y"</span>, <span class="tk-s">"orbyt-mcp"</span>, <span class="tk-s">"--backend"</span>, <span class="tk-s">"gpu"</span>, <span class="tk-s">"--memory"</span>, <span class="tk-s">"256"</span>]
+      <span class="tk-s">"args"</span>: [<span class="tk-s">"-y"</span>, <span class="tk-s">"-p"</span>, <span class="tk-s">"@orbythq/orbyt@0.9.2"</span>, <span class="tk-s">"orbyt-mcp"</span>, <span class="tk-s">"--backend"</span>, <span class="tk-s">"gpu"</span>, <span class="tk-s">"--memory"</span>, <span class="tk-s">"256"</span>]
     }
   }
 }</code></pre>
 
 <h2 id="tools">Tools</h2>
-<p><span class="badge ok">core</span> tools are part of the first release; <span class="badge soon">roadmap</span> tools are planned and will land across 0.9.x.</p>
+<p>18 tools ship in 0.9.2 (<span class="badge ok">core</span>); <span class="badge soon">roadmap</span> marks what's planned next.</p>
 <table>
 <thead><tr><th>Tool</th><th>What it does</th><th>Status</th></tr></thead>
 <tbody>
-<tr><td><code>create_scene</code></td><td>Start an empty scene with a sky and ground.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>load_model</code></td><td>Load a GLB/glTF file and add its parts.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>add_primitive</code></td><td>Add a box, sphere, cylinder, plane or cone.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>remove_part</code></td><td>Delete a part by id.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>list_parts</code></td><td>List parts with ids, names, materials and bounds.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>describe_scene</code></td><td>Plain-language summary of what is in the scene.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>set_material</code></td><td>Change colour, roughness, metalness, emissive or opacity.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>set_camera</code></td><td>Move the camera with eye, target and fov.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>set_environment</code></td><td>Switch HDRI, sky colours, fog and exposure.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>render_frame</code></td><td>Render a Flare frame and return it as a PNG.</td><td><span class="badge ok">core</span></td></tr>
-<tr><td><code>transform_part</code></td><td>Move, rotate or scale a part.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>set_light</code></td><td>Add or edit sun, spot and point lights.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>explode_view</code></td><td>Pull parts apart along their centres to show assembly.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>blend_meshes</code></td><td>Morph between two meshes or shape keys.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>bake_frame</code></td><td>Path-trace a still with Bake.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>compare_views</code></td><td>Render labelled views side by side for review.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>render_normals</code></td><td>Render world-space normals for inspection.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>snapshot</code></td><td>Save and restore scene state.</td><td><span class="badge soon">roadmap</span></td></tr>
-<tr><td><code>export_glb</code></td><td>Export the current scene as GLB.</td><td><span class="badge soon">roadmap</span></td></tr>
+<tr><td><code>create_scene</code></td><td>New empty scene, or one restored from a file written by <code>save_scene</code>.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>add_primitive</code></td><td>Box, sphere, cylinder, cone, plane, torus, torus knot, capsule or icosahedron, with transform and material.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>load_model</code></td><td>Add a local <code>.glb</code>/<code>.gltf</code>; replies with mesh count, triangles and size.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>remove_part</code></td><td>Remove a part or a light.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>list_parts</code></td><td>Ids, kinds and positions.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>describe_scene</code></td><td>Full scene JSON with world bounds, triangles, materials per part and the GPU in use.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_transform</code></td><td>Absolute position, rotation and scale, relative <code>translate</code>, <code>visible</code>.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_material</code></td><td>PBR material override (merge or replace); on models it applies to every mesh.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>add_light</code></td><td>Directional, point or spot light.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_camera</code></td><td>Eye, target, fov, or <code>auto</code> framing.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>set_environment</code></td><td>HDRI, intensity, background, blur, rotation, ground, sun, bloom, shadows, exposure.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>explode_parts</code></td><td>Exploded view: pushes parts away from the scene centre.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>render_frame</code></td><td>Render a Flare frame and return a PNG (optionally also saved to <code>out</code>).</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>render_views</code></td><td>Labelled 2×2 sheet: front, right, top and perspective (beauty or normals).</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>render_normals</code></td><td>Surface normals from the scene camera, to find flipped faces and seams.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>bake_frame</code></td><td>Path-traced still with Bake (<code>samples</code>, <code>timeoutSeconds</code>).</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>export_glb</code></td><td>Write the scene to a binary glTF.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>save_scene</code></td><td>Save the editable scene description as JSON.</td><td><span class="badge ok">core</span></td></tr>
+<tr><td><code>blend_parts</code></td><td>Mesh blend and booleans (union, subtract) between parts.</td><td><span class="badge soon">roadmap</span></td></tr>
 </tbody>
 </table>
 
@@ -102,8 +106,9 @@ renderer.<span class="tk-f">replaceParts</span>(parts);                       <s
 <ol>
 <li><code>create_scene</code> or <code>load_model</code> to get something on stage.</li>
 <li><code>list_parts</code> / <code>describe_scene</code> to understand it.</li>
-<li><code>set_material</code>, <code>set_camera</code>, <code>set_environment</code> to make changes.</li>
-<li><code>render_frame</code> to look at the result, then repeat.</li>
+<li><code>set_material</code>, <code>set_transform</code>, <code>set_camera</code>, <code>set_environment</code> to make changes.</li>
+<li><code>render_frame</code> or <code>render_views</code> to look at the result, then repeat.</li>
+<li><code>bake_frame</code> for a final path-traced still, <code>export_glb</code> or <code>save_scene</code> to keep the work.</li>
 </ol>
 <div class="pager"><a href="/docs/"><small>Previous</small>Getting started</a><a class="next" href="/docs/performance.html"><small>Next</small>Performance and memory</a></div>
 

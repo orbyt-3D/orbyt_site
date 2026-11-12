@@ -41,7 +41,7 @@
 
 <h1>Getting started</h1>
 <p class="lede">Install orbyt, put a model on screen with Flare, then render a path-traced still with Bake.</p>
-<div class="note"><strong>Preview.</strong> The <code>orbyt</code> package is in active development. This page describes the 0.9.x API it is being built to; names may still change before 1.0.</div>
+<div class="note"><strong>0.9.2 preview.</strong> The engine is built and tested; publishing to npm is coming soon, so the install line below will work once the package is live. Names may still change before 1.0.</div>
 
 <h2 id="install">Install</h2>
 <pre><code>npm install orbyt@npm:@orbythq/orbyt@0.9.2</code></pre>
@@ -70,14 +70,18 @@ renderer.<span class="tk-f">render</span>({ eye: [<span class="tk-n">42</span>, 
 <table>
 <thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
 <tbody>
-<tr><td><code>hdr</code></td><td><code>true</code></td><td>Renders in half-float with ACES tone mapping, so lights and the sky can go brighter than white.</td></tr>
-<tr><td><code>ground</code></td><td><code>true</code></td><td>Adds a shadow-catching ground plane under the model.</td></tr>
-<tr><td><code>environment.map</code></td><td>studio</td><td>Image-based lighting and reflections, usually from <code>loadHdri()</code>.</td></tr>
-<tr><td><code>shadows</code></td><td><code>true</code></td><td>Soft shadows from the key light. Pass cascade settings for large scenes.</td></tr>
-<tr><td><code>bloom</code></td><td><code>0.5</code></td><td>Glow around bright pixels. <code>0</code> turns it off.</td></tr>
-<tr><td><code>samples</code></td><td><code>4</code></td><td>MSAA samples for smooth edges.</td></tr>
-<tr><td><code>pixelRatio</code></td><td>screen, max 1.5</td><td>Render resolution multiplier.</td></tr>
-<tr><td><code>memoryBudgetMiB</code></td><td><code>512</code></td><td>Texture and geometry budget; see <a href="/docs/performance.html">Performance and memory</a>.</td></tr>
+<tr><td><code>hdr</code></td><td><code>true</code></td><td>Half-float pipeline: MSAA render target, bloom, then ACES tone mapping. <code>false</code> renders straight to the canvas (still ACES).</td></tr>
+<tr><td><code>bloom</code></td><td>on</td><td><code>false</code>, or <code>{ strength: 0.3, radius: 0.35, threshold: 1 }</code>. Only HDR highlights (emissive above 1) glow by default.</td></tr>
+<tr><td><code>samples</code></td><td><code>4</code></td><td>MSAA samples. <code>0</code> turns anti-aliasing off.</td></tr>
+<tr><td><code>pixelRatio</code></td><td>screen, max 2</td><td>Render resolution multiplier.</td></tr>
+<tr><td><code>shadows</code></td><td><code>true</code></td><td><code>true</code>, <code>false</code> or a shadow-map size. The sun's shadow frustum is fitted to the scene bounds.</td></tr>
+<tr><td><code>ground</code></td><td><code>true</code></td><td>Shadow-receiving ground that fades into the background, or <code>{ color, roughness, y }</code>.</td></tr>
+<tr><td><code>environment</code></td><td>studio</td><td><code>{ map, intensity, background, blur, rotation }</code>. <code>map</code> comes from <code>loadHdri()</code>; without one a neutral studio environment lights the scene.</td></tr>
+<tr><td><code>background</code></td><td><code>#060b10</code></td><td>Solid background when the environment map isn't shown.</td></tr>
+<tr><td><code>sun</code></td><td>on</td><td>Key light: <code>false</code> or <code>{ direction, color, intensity: 1.8 }</code>.</td></tr>
+<tr><td><code>exposure</code></td><td><code>1</code></td><td>Tone-mapping exposure.</td></tr>
+<tr><td><code>preserveDrawingBuffer</code></td><td><code>false</code></td><td>Turn on to read pixels back, e.g. <code>canvas.toDataURL()</code>.</td></tr>
+<tr><td><code>renderer</code></td><td>–</td><td>Reuse an existing <code>THREE.WebGLRenderer</code>.</td></tr>
 </tbody>
 </table>
 
@@ -97,8 +101,10 @@ renderer.<span class="tk-f">render</span>({ eye: [<span class="tk-n">42</span>, 
 <p>Bake takes the same parts and camera and returns a converged, path-traced image: slower, with true soft shadows, reflections and global illumination.</p>
 <pre><code><span class="tk-k">import</span> { Bake } <span class="tk-k">from</span> <span class="tk-s">'orbyt'</span>;
 
-<span class="tk-k">const</span> bake = <span class="tk-k">new</span> <span class="tk-f">Bake</span>(parts, { environment: { map } });
-<span class="tk-k">const</span> image = <span class="tk-k">await</span> bake.<span class="tk-f">render</span>({ eye: [<span class="tk-n">42</span>, <span class="tk-n">28</span>, <span class="tk-n">60</span>], target: [<span class="tk-n">0</span>, <span class="tk-n">2</span>, <span class="tk-n">-6</span>], samples: <span class="tk-n">512</span> });</code></pre>
+<span class="tk-k">const</span> bake = <span class="tk-k">new</span> <span class="tk-f">Bake</span>(canvas, parts, { environment: { map } });
+<span class="tk-k">const</span> image = <span class="tk-k">await</span> bake.<span class="tk-f">render</span>({ eye: [<span class="tk-n">42</span>, <span class="tk-n">28</span>, <span class="tk-n">60</span>], target: [<span class="tk-n">0</span>, <span class="tk-n">2</span>, <span class="tk-n">-6</span>], samples: <span class="tk-n">128</span> });
+img.src = image.<span class="tk-f">toDataURL</span>();</code></pre>
+<p><code>render()</code> resolves to <code>{ samples, ms, canvas, toDataURL(), toBlob() }</code> and also accepts <code>onProgress</code>, an <code>AbortSignal</code> and <code>timeoutMs</code>. The first bake compiles a large shader: a few seconds on most GPUs, up to about 45&nbsp;s with Direct3D 11 on Windows; later bakes start immediately.</p>
 
 <h2 id="cleanup">Clean up</h2>
 <p>Call <code>renderer.dispose()</code> when you remove the canvas to free GPU memory. Swap models without recreating the renderer with <code>renderer.replaceParts(parts)</code>.</p>
