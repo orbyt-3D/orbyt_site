@@ -1,0 +1,9 @@
+# local editor / assistant settings
+.claude/
+.vscode/
+.idea/
+
+# OS clutter
+.DS_Store
+Thumbs.db
+desktop.ini
