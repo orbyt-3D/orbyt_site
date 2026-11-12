@@ -22,6 +22,12 @@ python -m http.server 5173
 
 Then visit http://localhost:5173.
 
+## Deploy
+
+Hosted on [Vercel](https://vercel.com) as a static site (framework preset: **Other**, no build command).
+`vercel.json` adds security headers (CSP allowing only this site and `cdn.jsdelivr.net`, HSTS,
+`nosniff`, no framing). Every push to `main` redeploys automatically.
+
 ## Performance notes
 
 - Static meshes are merged per material and the shadow map is drawn once, so the hero runs at ~130 draw calls per frame.
