@@ -1,6 +1,6 @@
 # orbyt-site
 
-Landing page for **orbyt**, a 3D engine that AI agents drive.
+Landing page for **orbyt**, a 3D engine that AI agents drive. Live at https://www.orbyt3d.space
 
 Everything lives in a single file, `index.html`: no build step, no dependencies to install.
 Three.js (v0.160) is loaded from the jsDelivr CDN at runtime.
