@@ -18,13 +18,15 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="orbyt: a rocket on a lit launch pad at night, rendered in 3D">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Orbyt3d">
+<meta name="twitter:creator" content="@Orbyt3d">
 <meta name="twitter:title" content="orbyt · 3D engine that AI agents drive">
 <meta name="twitter:description" content="Real-time WebGL2 with Flare, offline path tracing with Bake, and 18 MCP tools in one package.">
 <meta name="twitter:image" content="https://www.orbyt3d.space/og.jpg">
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "orbyt", "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Web", "description": "3D engine that AI agents drive: real-time WebGL2 rendering, offline path tracing and MCP tools.",
-  "url": "https://www.orbyt3d.space/", "codeRepository": "https://github.com/orbyt-3D/orbyt-engine",
+  "url": "https://www.orbyt3d.space/", "codeRepository": "https://github.com/orbyt-3D/orbyt-engine", "sameAs": ["https://x.com/Orbyt3d", "https://github.com/orbyt-3D"],
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
 </script>
 <style>
@@ -286,6 +288,7 @@ main > *, .hero > *, .code-grid > *, .agents > * { min-width: 0; }
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v17H6.5A2.5 2.5 0 0 0 4 22.5z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v17h5.5a2.5 2.5 0 0 1 2.5 2.5z"/></symbol>
   <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
   <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
@@ -303,6 +306,7 @@ main > *, .hero > *, .code-grid > *, .agents > * { min-width: 0; }
   <nav class="nav-links" aria-label="Primary">
     <a class="txt" href="/docs/"><svg class="icon"><use href="#i-book"/></svg><span>Docs</span></a>
     <a class="txt" href="/changelog.html"><svg class="icon"><use href="#i-history"/></svg><span>Changelog</span></a>
+    <a class="x-link" href="https://x.com/Orbyt3d" target="_blank" rel="noopener" aria-label="orbyt on X"><svg class="icon"><use href="#i-x"/></svg></a>
     <a class="gh" href="https://github.com/orbyt-3D/orbyt-engine" target="_blank" rel="noopener"><svg class="icon"><use href="#i-github"/></svg>GitHub</a>
   </nav>
 </header>
@@ -419,6 +423,7 @@ renderer.<span class="tk-f">render</span>(<span class="tk-p">{</span> eye: [<spa
   <a class="brand" href="#top"><svg class="brand-mark" style="width:18px;height:18px"><use href="#logo"/></svg>orbyt <span>by Lumora Labs</span></a>
   <div class="footer-links">
     <a href="https://github.com/orbyt-3D/orbyt-engine" target="_blank" rel="noopener"><svg class="icon" style="width:14px;height:14px"><use href="#i-github"/></svg>GitHub</a>
+    <a href="https://x.com/Orbyt3d" target="_blank" rel="noopener"><svg class="icon" style="width:14px;height:14px"><use href="#i-x"/></svg>X</a>
     <a href="#install">npm</a>
     <a href="https://github.com/orbyt-3D/orbyt-engine/commits/main" target="_blank" rel="noopener">Commits</a>
     <a href="/changelog.html">Changelog</a>
